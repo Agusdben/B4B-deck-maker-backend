@@ -5,7 +5,7 @@ import { createError } from '../helpers/createError.js'
 import { createUser } from '../services/users.service.js'
 
 export const userSignIn = async (req, res, next) => {
-  const { username = '', password = '' } = req.body
+  const { username = '', password = '', confirmPassword = '' } = req.body
 
   if (!username || !isString(username) || !REGISTER_REGEX.username.test(username)) {
     return res
@@ -29,10 +29,32 @@ export const userSignIn = async (req, res, next) => {
       }))
   }
 
+  if (password !== confirmPassword) {
+    return res
+      .status(400)
+      .json(createError({
+        message: REGISTER_ERRORS.confirmPassword,
+        status: 400,
+        field: 'confirmPassword',
+        code: ERRORS_CODE.InvalidField
+      }))
+  }
+
   try {
     const user = await createUser({ username, password })
     return res.status(200).json(user).end()
   } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res
+        .status(409)
+        .json(createError({
+          code: ERRORS_CODE.Duplicated,
+          field: 'username',
+          message: 'Username already exists',
+          status: 409
+        }))
+    }
+
     next(error)
   }
 }

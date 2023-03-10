@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { userSignIn } from '../controllers/users.controller.js'
+import { userLogin, userSignIn } from '../controllers/users.controller.js'
 
 export default Router()
   .post('/signin', userSignIn)
+  .post('/login', userLogin)

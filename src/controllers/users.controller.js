@@ -1,8 +1,10 @@
 import { ERRORS_CODE } from '../constants/errorsCode.js'
 import { REGISTER_ERRORS, REGISTER_REGEX } from '../constants/user.js'
 import { isString } from '../helpers/checkTypes.js'
+import { comparePasswords } from '../helpers/comparePasswords.js'
 import { createError } from '../helpers/createError.js'
-import { createUser } from '../services/users.service.js'
+import jwt from 'jsonwebtoken'
+import * as Users from '../services/users.service.js'
 
 export const userSignIn = async (req, res, next) => {
   const { username = '', password = '', confirmPassword = '' } = req.body
@@ -41,7 +43,7 @@ export const userSignIn = async (req, res, next) => {
   }
 
   try {
-    const user = await createUser({ username, password })
+    const user = await Users.createUser({ username, password })
     return res.status(200).json(user).end()
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
@@ -55,6 +57,50 @@ export const userSignIn = async (req, res, next) => {
         }))
     }
 
+    next(error)
+  }
+}
+
+export const userLogin = async (req, res, next) => {
+  const { username, password: bodyPassword } = req.body
+
+  try {
+    const user = await Users.findOne({ username })
+
+    if (user === undefined) {
+      return res
+        .status(404)
+        .json(createError({
+          code: ERRORS_CODE.NotFound,
+          field: 'username',
+          message: 'Username does not exists',
+          status: 404
+        }))
+    }
+
+    const validPassword = await comparePasswords({ password: bodyPassword, hashedPassword: user.password })
+
+    if (!validPassword) {
+      return res
+        .status(400)
+        .json(createError({
+          code: ERRORS_CODE.InvalidField,
+          field: 'password',
+          message: 'Invalid password',
+          status: 400
+        }))
+    }
+
+    const token = jwt.sign(
+      { username },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: 60 * 60 * 24 * 30
+      }
+    )
+
+    return res.status(200).json({ username, token }).end()
+  } catch (error) {
     next(error)
   }
 }

@@ -9,3 +9,9 @@ export const createUser = async ({ username, password }) => {
   await db.query(q, [id, username, hashedPassword])
   return { id, username, password }
 }
+
+export const findOne = async ({ username }) => {
+  const q = 'SELECT * FROM users WHERE username = ?'
+  const [rows] = await db.query(q, [username])
+  return rows[0]
+}

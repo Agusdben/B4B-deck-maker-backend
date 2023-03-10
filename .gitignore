@@ -1,6 +1,6 @@
 # folders
 /dev
-/requests
+/src/requests
 /node_modules
 
 # files

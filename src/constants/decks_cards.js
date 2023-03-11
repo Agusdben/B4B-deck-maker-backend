@@ -1,0 +1,1 @@
+export const MAX_DECKS_CARDS_LENGTH = 15

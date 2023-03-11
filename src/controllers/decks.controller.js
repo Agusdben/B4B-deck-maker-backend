@@ -57,18 +57,43 @@ export const updateDeck = async (req, res, next) => {
 
     if (deck === undefined) {
       return res
-        .status(400)
+        .status(404)
         .json(createError({
-          code: ERRORS_CODE.InvalidField,
+          code: ERRORS_CODE.NotFound,
           field: 'deckId',
-          message: 'deckId invalid',
-          status: 400
+          message: 'Deck not found',
+          status: 404
         }))
     }
 
     await Decks.updateDeck({ title, deckId })
 
     return res.status(200).json({ ...deck, title }).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteDeck = async (req, res, next) => {
+  const { deckId } = req.params
+
+  try {
+    const deck = await Decks.findOne({ id: deckId })
+
+    if (deck === undefined) {
+      return res
+        .status(404)
+        .json(createError({
+          code: ERRORS_CODE.NotFound,
+          field: 'deckId',
+          message: 'Deck not found',
+          status: 404
+        }))
+    }
+
+    await Decks.deleteOne({ id: deckId })
+
+    return res.status(204).end()
   } catch (error) {
     next(error)
   }

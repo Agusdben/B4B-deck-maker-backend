@@ -16,12 +16,16 @@ export const addDeck = async ({ title, userId }) => {
 
 export const updateDeck = async ({ title, deckId }) => {
   const q = 'UPDATE decks SET title = ? WHERE id = ?'
-  const [rows] = await db.query(q, [title, deckId])
-  return rows[0]
+  await db.query(q, [title, deckId])
 }
 
 export const findOne = async ({ id }) => {
   const q = 'SELECT * FROM decks WHERE id = ?'
   const [rows] = await db.query(q, [id])
   return rows[0]
+}
+
+export const deleteOne = async ({ id }) => {
+  const q = 'DELETE FROM decks WHERE id = ?'
+  await db.query(q, [id])
 }

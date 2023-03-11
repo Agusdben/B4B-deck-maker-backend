@@ -36,3 +36,40 @@ export const createDeck = async (req, res, next) => {
     next(error)
   }
 }
+
+export const updateDeck = async (req, res, next) => {
+  const { deckId } = req.params
+  const { title } = req.body
+
+  if (!title || !TITLE_REGEX.test(title)) {
+    return res
+      .status(400)
+      .json(createError({
+        code: ERRORS_CODE.InvalidField,
+        field: 'title',
+        message: TITLE_ERROR,
+        status: 400
+      }))
+  }
+
+  try {
+    const deck = await Decks.findOne({ id: deckId })
+
+    if (deck === undefined) {
+      return res
+        .status(400)
+        .json(createError({
+          code: ERRORS_CODE.InvalidField,
+          field: 'deckId',
+          message: 'deckId invalid',
+          status: 400
+        }))
+    }
+
+    await Decks.updateDeck({ title, deckId })
+
+    return res.status(200).json({ ...deck, title }).end()
+  } catch (error) {
+    next(error)
+  }
+}

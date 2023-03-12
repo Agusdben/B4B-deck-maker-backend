@@ -19,3 +19,8 @@ export const addCardToDeck = async ({ deckId, cardId }) => {
   const q = 'insert into decks_cards(id_deck, id_card) values(?, ?)'
   await db.query(q, [deckId, cardId])
 }
+
+export const deleteCardInDeck = async ({ deckId, cardId }) => {
+  const q = 'DELETE FROM decks_cards WHERE id_deck = ? AND id_card = ?'
+  await db.query(q, [deckId, cardId])
+}

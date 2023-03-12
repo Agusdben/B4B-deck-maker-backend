@@ -10,7 +10,7 @@ export const getDecksCards = async (req, res, next) => {
   try {
     const decksCards = await DecksCards.getCardsByDeckId({ id: deckId })
     const cardsToReturn = decksCards.map(card => formatCard({ card, req }))
-    return res.status(200).json(cardsToReturn)
+    return res.status(200).json(cardsToReturn).end()
   } catch (error) {
     next(error)
   }
@@ -49,7 +49,18 @@ export const addCardToDeck = async (req, res, next) => {
 
     const cardToReturn = formatCard({ card, req })
 
-    return res.status(200).json(cardToReturn)
+    return res.status(200).json(cardToReturn).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteCardFromDeck = async (req, res, next) => {
+  const { deckId, cardId } = req.params
+
+  try {
+    await DecksCards.deleteCardInDeck({ deckId, cardId })
+    return res.status(200).end()
   } catch (error) {
     next(error)
   }

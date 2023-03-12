@@ -16,3 +16,9 @@ export default Router()
     [verifyToken, decksMiddlewares.verifyExistenceOfDeck, cardsMiddlewares.verifyExistenceOfCard],
     controller.addCardToDeck
   )
+
+  .delete(
+    '/:deckId/:cardId',
+    [verifyToken, decksMiddlewares.verifyExistenceOfDeck, cardsMiddlewares.verifyExistenceOfCard],
+    controller.deleteCardFromDeck
+  )

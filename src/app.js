@@ -28,7 +28,7 @@ app.use('/api/decks_cards', decksCards)
 app.use(handleErrors)
 
 app.listen(PORT, () => {
-  console.log(`Server on port ${PORT}: http://localhost:${PORT}`)
+  console.log(`Server on port ${PORT}`)
 })
 
 db.connect()

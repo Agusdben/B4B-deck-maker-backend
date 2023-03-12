@@ -26,6 +26,6 @@ export const findOne = async ({ id }) => {
 }
 
 export const deleteOne = async ({ id }) => {
-  const q = 'DELETE FROM decks WHERE id = ?'
-  await db.query(q, [id])
+  await db.query('DELETE FROM decks WHERE id = ?', [id])
+  await db.query('DELETE FROM decks_cards WHERE id_deck = ?', [id])
 }

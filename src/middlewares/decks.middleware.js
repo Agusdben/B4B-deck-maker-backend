@@ -4,7 +4,7 @@ import { createError } from '../helpers/createError.js'
 import * as Decks from '../services/decks.service.js'
 
 export const verifyExistenceOfDeck = async (req, res, next) => {
-  const { deckId } = req.params || req.body
+  const deckId = req.params.deckId || req.body.deckId
 
   if (!deckId) {
     return res

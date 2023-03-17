@@ -3,8 +3,15 @@ import { REGISTER_ERRORS, REGISTER_REGEX } from '../constants/user.js'
 import { isString } from '../helpers/checkTypes.js'
 import { comparePasswords } from '../helpers/comparePasswords.js'
 import { createError } from '../helpers/createError.js'
-import jwt from 'jsonwebtoken'
 import * as Users from '../services/users.service.js'
+import generateToken from '../helpers/generateToken.js'
+
+export const loginToken = (req, res) => {
+  const { user } = req
+  const { iat, exp, ...userToReturn } = user
+  const token = generateToken({ toSign: userToReturn })
+  return res.status(200).json({ ...userToReturn, token })
+}
 
 export const userSignIn = async (req, res, next) => {
   const { username = '', password = '', confirmPassword = '' } = req.body
@@ -93,13 +100,7 @@ export const userLogin = async (req, res, next) => {
 
     const { password, ...restOfUser } = user
 
-    const token = jwt.sign(
-      { ...restOfUser },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: 60 * 60 * 24 * 30
-      }
-    )
+    const token = generateToken({ toSign: restOfUser })
 
     return res.status(200).json({ ...restOfUser, token }).end()
   } catch (error) {

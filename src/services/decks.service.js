@@ -2,7 +2,14 @@ import db from '../config/db.js'
 import generateUUID from '../helpers/generateUUID.js'
 
 export const getDecksByUserId = async ({ userId }) => {
-  const q = 'SELECT * FROM decks WHERE id_user = ?'
+  const q =
+    `
+      SELECT id, title, id_user, count(dc.id_card) 'total_cards'
+      FROM decks d
+      LEFT JOIN decks_cards dc ON dc.id_deck = d.id
+      WHERE id_user = ?
+      GROUP BY id, title, id_user;
+    `
   const [rows] = await db.query(q, [userId])
   return rows
 }

@@ -11,6 +11,17 @@ export const getDecks = async (req, res, next) => {
   }
 }
 
+export const getDeck = async (req, res, next) => {
+  const { deckId } = req.params
+
+  try {
+    const deck = await Decks.findOne({ id: deckId })
+    return res.status(200).json(deck)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const createDeck = async (req, res, next) => {
   const { title } = req.body
   const { user } = req

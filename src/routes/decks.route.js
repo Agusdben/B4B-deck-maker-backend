@@ -5,9 +5,15 @@ import * as decksMiddlewares from '../middlewares/decks.middleware.js'
 
 export default Router()
   .get(
-    '/:userId',
+    '/user/:userId',
     [verifyToken],
     controller.getDecks
+  )
+
+  .get(
+    '/:deckId',
+    [verifyToken, decksMiddlewares.verifyExistenceOfDeck],
+    controller.getDeck
   )
 
   .post(

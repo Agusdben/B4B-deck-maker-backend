@@ -3,5 +3,6 @@ export const ERRORS_CODE = {
   Duplicated: 'Duplicated entry',
   NotFound: 'Not found',
   InvalidField: 'Field missing or invalid',
-  Token: 'Token error'
+  Token: 'Token error',
+  LimitReached: 'Limit Reached'
 }

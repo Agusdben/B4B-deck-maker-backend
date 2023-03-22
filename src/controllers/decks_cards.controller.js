@@ -60,7 +60,12 @@ export const deleteCardFromDeck = async (req, res, next) => {
 
   try {
     await DecksCards.deleteCardInDeck({ deckId, cardId })
-    return res.status(200).end()
+
+    const card = await Cards.findOne({ id: cardId })
+
+    const cardToReturn = formatCard({ card, req })
+
+    return res.status(200).json(cardToReturn).end()
   } catch (error) {
     next(error)
   }

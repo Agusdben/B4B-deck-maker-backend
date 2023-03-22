@@ -18,7 +18,7 @@ export default Router()
 
   .post(
     '/',
-    [verifyToken, decksMiddlewares.verifyDeckTitle],
+    [verifyToken, decksMiddlewares.verifyFreeSpace, decksMiddlewares.verifyDeckTitle],
     controller.createDeck
   )
 

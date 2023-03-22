@@ -8,7 +8,8 @@ export const getDecksByUserId = async ({ userId }) => {
       FROM decks d
       LEFT JOIN decks_cards dc ON dc.id_deck = d.id
       WHERE id_user = ?
-      GROUP BY id, title, id_user;
+      GROUP BY id, title, id_user
+      ORDER BY title asc
     `
   const [rows] = await db.query(q, [userId])
   return rows
